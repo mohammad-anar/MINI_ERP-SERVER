@@ -1,74 +1,69 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable no-undef */
 /* eslint-disable no-console */
 import colors from 'colors';
 import mongoose from 'mongoose';
-import { Server } from 'socket.io';
 import app from './app';
 import config from './config';
 import { seedSuperAdmin } from './DB/seedAdmin';
 import { socketHelper } from './helpers/socketHelper';
 import { errorLogger, logger } from './shared/logger';
 
-//uncaught exception
+// ─── Uncaught exception — must exit immediately ────────────────────────────
 process.on('uncaughtException', error => {
-  errorLogger.error('UnhandledException Detected', error);
+  errorLogger.error('💥 UncaughtException detected:', error);
   process.exit(1);
 });
-console.log(process.env.SUPER_ADMIN_EMAIL);
-let server: any;
-async function main() {
+
+// ─── Main bootstrap ────────────────────────────────────────────────────────
+let server: ReturnType<typeof app.listen> | null = null;
+
+const main = async () => {
   try {
-    mongoose.connect(config.database_url as string);
+    // 1. Connect to MongoDB
+    await mongoose.connect(config.database_url);
     logger.info(colors.green('🚀 Database connected successfully'));
 
-    //Seed Super Admin after database connection is successful
+    // 2. Seed Super Admin (idempotent)
     await seedSuperAdmin();
 
-    const port =
-      typeof config.port === 'number' ? config.port : Number(config.port);
-
+    // 3. Start HTTP server
+    const port = Number(config.port) || 5000;
     server = app.listen(port, config.ip_address as string, () => {
       logger.info(
-        colors.yellow(`♻️  Application listening on port:${config.port}`)
+        colors.yellow(`♻️  Server listening on port ${port} [${config.node_env}]`)
       );
     });
 
-    //socket
-    const io = new Server(server, {
-      pingTimeout: 60000,
-      cors: {
-        origin: '*',
-      },
-    });
-    socketHelper.socket(io);
-    //@ts-ignore
-    global.io = io;
+    // 4. Attach Socket.IO
+    socketHelper.init(server);
+    logger.info(colors.cyan('🔌 Socket.IO initialised'));
   } catch (error) {
-    console.log(error);
-    errorLogger.error(colors.red('🤢 Failed to connect Database'));
+    errorLogger.error(colors.red('❌ Server startup failed:'), error);
+    process.exit(1);
   }
-
-  //handle UnhandledRejection
-  process.on('unhandledRejection', error => {
-    if (server) {
-      server.close(() => {
-        errorLogger.error('UnhandledRejection Detected', error);
-        process.exit(1);
-      });
-    } else {
-      process.exit(1);
-    }
-  });
-}
+};
 
 main();
 
-//SIGTERM
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM IS RECEIVE');
+// ─── Unhandled promise rejections ──────────────────────────────────────────
+process.on('unhandledRejection', error => {
+  errorLogger.error('💥 UnhandledRejection detected:', error);
   if (server) {
-    server.close();
+    server.close(() => process.exit(1));
+  } else {
+    process.exit(1);
+  }
+});
+
+// ─── Graceful shutdown (SIGTERM / Docker / PM2) ────────────────────────────
+process.on('SIGTERM', () => {
+  logger.info(colors.magenta('🛑 SIGTERM received — shutting down gracefully'));
+  if (server) {
+    server.close(() => {
+      logger.info('✅ HTTP server closed');
+      mongoose.connection.close().then(() => {
+        logger.info('✅ Database connection closed');
+        process.exit(0);
+      });
+    });
   }
 });

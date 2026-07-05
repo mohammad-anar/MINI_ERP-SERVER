@@ -70,6 +70,7 @@ const forgetPasswordToDB = async (email: string) => {
   const otp = generateOTP();
   const value = {
     otp,
+    name: isExistUser.name,
     email: isExistUser.email,
   };
   const forgetPassword = emailTemplate.resetPassword(value);

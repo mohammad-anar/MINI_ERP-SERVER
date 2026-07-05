@@ -8,32 +8,32 @@ const router = express.Router();
 
 router.post(
   '/login',
-  validateRequest(AuthValidation.createLoginZodSchema),
+  validateRequest(AuthValidation.loginSchema),
   AuthController.loginUser
 );
 
 router.post(
   '/forget-password',
-  validateRequest(AuthValidation.createForgetPasswordZodSchema),
+  validateRequest(AuthValidation.forgotPasswordSchema),
   AuthController.forgetPassword
 );
 
 router.post(
   '/verify-email',
-  validateRequest(AuthValidation.createVerifyEmailZodSchema),
+  validateRequest(AuthValidation.verifyEmailSchema),
   AuthController.verifyEmail
 );
 
 router.post(
   '/reset-password',
-  validateRequest(AuthValidation.createResetPasswordZodSchema),
+  validateRequest(AuthValidation.resetPasswordSchema),
   AuthController.resetPassword
 );
 
 router.post(
   '/change-password',
   auth(USER_ROLES.ADMIN, USER_ROLES.USER),
-  validateRequest(AuthValidation.createChangePasswordZodSchema),
+  validateRequest(AuthValidation.changePasswordSchema),
   AuthController.changePassword
 );
 

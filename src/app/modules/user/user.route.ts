@@ -15,7 +15,7 @@ router
     fileUploadHandler(),
     (req: Request, res: Response, next: NextFunction) => {
       if (req.body.data) {
-        req.body = UserValidation.updateUserZodSchema.parse(
+        req.body = UserValidation.updateUserSchema.parse(
           JSON.parse(req.body.data)
         );
       }
@@ -26,7 +26,7 @@ router
 router
   .route('/')
   .post(
-    validateRequest(UserValidation.createUserZodSchema),
+    validateRequest(UserValidation.createUserSchema),
     UserController.createUser
   );
 

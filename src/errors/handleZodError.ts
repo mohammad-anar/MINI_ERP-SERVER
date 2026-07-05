@@ -1,18 +1,18 @@
 import { ZodError } from 'zod';
 import { IErrorMessage } from '../types/errors.types';
 
+/**
+ * Formats a ZodError into the standard API error shape.
+ * Maps each issue to { path, message } — path is the deepest path segment.
+ */
 const handleZodError = (error: ZodError) => {
-  console.log(error.errors);
-  const errorMessages: IErrorMessage[] = error.errors.map(el => {
-    return {
-      path: el.path[el.path.length - 1],
-      message: el.message,
-    };
-  });
+  const errorMessages: IErrorMessage[] = error.errors.map(issue => ({
+    path: issue.path[issue.path.length - 1] ?? 'unknown',
+    message: issue.message,
+  }));
 
-  const statusCode = 400;
   return {
-    statusCode,
+    statusCode: 422,
     message: 'Validation Error',
     errorMessages,
   };

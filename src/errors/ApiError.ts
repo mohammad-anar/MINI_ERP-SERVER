@@ -1,8 +1,21 @@
+/**
+ * Operational API error that is safe to expose to the client.
+ * `isOperational = true` distinguishes known errors from unexpected crashes.
+ */
 class ApiError extends Error {
   statusCode: number;
-  constructor(statusCode: number, message: string | undefined, stack = '') {
+  isOperational: boolean;
+
+  constructor(
+    statusCode: number,
+    message: string | undefined,
+    stack = '',
+    isOperational = true
+  ) {
     super(message);
     this.statusCode = statusCode;
+    this.isOperational = isOperational;
+
     if (stack) {
       this.stack = stack;
     } else {

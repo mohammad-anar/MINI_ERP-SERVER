@@ -1,50 +1,56 @@
-import { z } from 'zod';
+import {
+  withBody,
+  zodEmail,
+  zodOTP,
+  zodPassword,
+} from '../../../shared/zodValidators';
 
-const createVerifyEmailZodSchema = z.object({
-  body: z.object({
-    email: z.string({ required_error: 'Email is required' }),
-    oneTimeCode: z.number({ required_error: 'One time code is required' }),
-  }),
+/**
+ * POST /auth/login
+ */
+const loginSchema = withBody({
+  email: zodEmail(),
+  password: zodPassword(),
 });
 
-const createLoginZodSchema = z.object({
-  body: z.object({
-    email: z.string({ required_error: 'Email is required' }),
-    password: z.string({ required_error: 'Password is required' }),
-  }),
+/**
+ * POST /auth/verify-email
+ */
+const verifyEmailSchema = withBody({
+  email: zodEmail(),
+  oneTimeCode: zodOTP(),
 });
 
-const createForgetPasswordZodSchema = z.object({
-  body: z.object({
-    email: z.string({ required_error: 'Email is required' }),
-  }),
+/**
+ * POST /auth/forgot-password
+ */
+const forgotPasswordSchema = withBody({
+  email: zodEmail(),
 });
 
-const createResetPasswordZodSchema = z.object({
-  body: z.object({
-    newPassword: z.string({ required_error: 'Password is required' }),
-    confirmPassword: z.string({
-      required_error: 'Confirm Password is required',
-    }),
-  }),
+/**
+ * POST /auth/reset-password  (requires reset token in query/header)
+ * Note: newPassword === confirmPassword check is handled in the service layer.
+ */
+const resetPasswordSchema = withBody({
+  newPassword: zodPassword(),
+  confirmPassword: zodPassword(),
 });
 
-const createChangePasswordZodSchema = z.object({
-  body: z.object({
-    currentPassword: z.string({
-      required_error: 'Current Password is required',
-    }),
-    newPassword: z.string({ required_error: 'New Password is required' }),
-    confirmPassword: z.string({
-      required_error: 'Confirm Password is required',
-    }),
-  }),
+
+/**
+ * PATCH /auth/change-password
+ */
+const changePasswordSchema = withBody({
+  currentPassword: zodPassword(),
+  newPassword: zodPassword(),
+  confirmPassword: zodPassword(),
 });
 
 export const AuthValidation = {
-  createVerifyEmailZodSchema,
-  createForgetPasswordZodSchema,
-  createLoginZodSchema,
-  createResetPasswordZodSchema,
-  createChangePasswordZodSchema,
+  loginSchema,
+  verifyEmailSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  changePasswordSchema,
 };
