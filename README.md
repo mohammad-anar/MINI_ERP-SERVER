@@ -9,7 +9,7 @@ A professional, feature-rich Node.js + Express + TypeScript + MongoDB backend te
 | Category | Implementation |
 |---|---|
 | **Auth** | JWT access + refresh tokens, OTP email verification, password reset |
-| **Roles** | `SUPER_ADMIN`, `ADMIN`, `USER` — database-driven |
+| **Roles** | `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `EMPLOYEE` — database-driven |
 | **Validation** | Zod schema validation with reusable field builders |
 | **Error Handling** | Global error handler covering 8+ error types |
 | **Real-time** | Socket.IO with per-user multi-tab tracking and admin room |
@@ -195,7 +195,38 @@ src/
 |---|---|---|---|
 | `GET` | `/profile` | ✅ | Any |
 | `PATCH` | `/profile` | ✅ | Any |
-| `GET` | `/` | ✅ | ADMIN, SUPER_ADMIN |
+| `POST` | `/` | ❌ | Any |
+
+### Product (`/api/v1/product`)
+
+| Method | Endpoint | Auth | Roles | Description |
+|---|---|---|---|---|
+| `POST` | `/` | ✅ | ADMIN, MANAGER | Create product (multipart/form-data with `image`) |
+| `GET` | `/` | ✅ | ADMIN, MANAGER, EMPLOYEE | Get all products (supports search/paginate) |
+| `GET` | `/:id` | ✅ | ADMIN, MANAGER, EMPLOYEE | Get single product by ID |
+| `PATCH` | `/:id` | ✅ | ADMIN, MANAGER | Update product (multipart/form-data optional `image`) |
+| `DELETE` | `/:id` | ✅ | ADMIN, MANAGER | Delete product |
+
+### Sales (`/api/v1/sales`)
+
+| Method | Endpoint | Auth | Roles | Description |
+|---|---|---|---|---|
+| `POST` | `/` | ✅ | ADMIN, MANAGER, EMPLOYEE | Create a sale transaction (auto stock reduction) |
+| `GET` | `/` | ✅ | ADMIN, MANAGER, EMPLOYEE | Get sales history |
+
+### Dashboard (`/api/v1/dashboard`)
+
+| Method | Endpoint | Auth | Roles | Description |
+|---|---|---|---|---|
+| `GET` | `/` | ✅ | ADMIN, SUPER_ADMIN | Retrieve Total Products, Total Sales, Low Stock |
+
+### Notification (`/api/v1/notification`)
+
+| Method | Endpoint | Auth | Roles | Description |
+|---|---|---|---|---|
+| `GET` | `/` | ✅ | Any | Fetch notifications for logged-in user |
+| `PATCH` | `/mark-all-read` | ✅ | Any | Mark all notifications of user as read |
+| `PATCH` | `/:id` | ✅ | Any | Mark specific notification as read |
 
 ---
 

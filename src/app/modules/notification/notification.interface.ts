@@ -8,7 +8,7 @@ export type NotificationType =
   | 'SYSTEM'
   | 'ADMIN_ALERT';
 
-export interface INotification {
+export type INotification = {
   userId: Types.ObjectId;
   type: NotificationType;
   title: string;

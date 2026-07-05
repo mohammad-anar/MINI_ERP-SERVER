@@ -2,12 +2,12 @@ import { z } from 'zod';
 import {
   withBody,
   zodEmail,
-  zodOptionalString,
   zodPassword,
   zodPhone,
   zodString,
   zodUrl,
 } from '../../../shared/zodValidators';
+import { USER_ROLES } from '../../../enums/user';
 
 /**
  * POST /user  — create new user
@@ -16,6 +16,7 @@ const createUserSchema = withBody({
   name: zodString('Name'),
   email: zodEmail(),
   password: zodPassword(),
+  role: z.nativeEnum(USER_ROLES).optional(),
   contact: zodPhone().optional(),
   location: zodString('Location').optional(),
   image: zodUrl('Profile image').optional(),
