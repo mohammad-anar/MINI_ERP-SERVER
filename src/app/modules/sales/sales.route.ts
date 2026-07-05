@@ -10,12 +10,12 @@ const router = express.Router();
 router
   .route('/')
   .post(
-    auth(USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.EMPLOYEE),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.EMPLOYEE),
     validateRequest(SalesValidation.createSaleSchema),
     SalesController.createSale
   )
   .get(
-    auth(USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.EMPLOYEE),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.EMPLOYEE),
     SalesController.getSaleHistory
   );
 

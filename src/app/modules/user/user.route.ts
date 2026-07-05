@@ -30,4 +30,12 @@ router
     UserController.createUser
   );
 
+router
+  .route('/create-staff')
+  .post(
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    validateRequest(UserValidation.createStaffSchema),
+    UserController.createStaff
+  );
+
 export const UserRoutes = router;

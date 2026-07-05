@@ -52,4 +52,18 @@ const updateProfile = catchAsync(
   }
 );
 
-export const UserController = { createUser, getUserProfile, updateProfile };
+const createStaff = catchAsync(
+  async (req: Request, res: Response) => {
+    const { ...userData } = req.body;
+    const result = await UserService.createStaffToDB(userData);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Staff account created successfully',
+      data: result,
+    });
+  }
+);
+
+export const UserController = { createUser, getUserProfile, updateProfile, createStaff };

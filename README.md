@@ -1,4 +1,4 @@
-# 🚀 Mongoose Template — Production-Ready Node.js Backend
+# 🚀 Mini ERP — Enterprise Operations & Inventory Management System
 
 A professional, feature-rich Node.js + Express + TypeScript + MongoDB backend template with JWT authentication, Socket.IO, modular architecture, and a generic query builder.
 
@@ -70,16 +70,26 @@ The server will:
 
 ---
 
-## 🔐 Default Super Admin Credentials
+## 🔐 Default Login & Role Credentials
 
-> ⚠️ Change these in production via your `.env` file.
+Below are the default login credentials and instructions to test each user role:
+
+### 1. Default Super Admin (Seeded Automatically)
+Use this account to perform full administrative actions, configure products, process sales, view notifications, and register new staff members.
 
 | Field | Value |
 |---|---|
-| Email | `admin@gmail.com` |
-| Password | `12345678` |
-| Name | `SuperAdmin` |
-| Role | `SUPER_ADMIN` |
+| **Email** | `admin@gmail.com` |
+| **Password** | `12345678` |
+| **Role** | `SUPER_ADMIN` / `ADMIN` |
+
+### 2. Creating Staff Accounts (Admin/Manager/Employee)
+To test different roles and permissions, log in as the Super Admin (`admin@gmail.com`), go to **Create Staff** in the sidebar, and register new users. Admins can create the following account types which can be logged in immediately:
+
+* **Manager**: Can view/create sales and manage products (create, update, delete).
+  * *Example Test Credentials*: `manager@gmail.com` / `password123`
+* **Employee**: Can view products and create sales (cannot edit/delete products).
+  * *Example Test Credentials*: `employee@gmail.com` / `password123`
 
 ---
 

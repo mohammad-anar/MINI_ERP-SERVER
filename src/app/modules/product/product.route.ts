@@ -22,32 +22,32 @@ const parseBodyData = (req: Request, res: Response, next: NextFunction) => {
 router
   .route('/')
   .post(
-    auth(USER_ROLES.ADMIN, USER_ROLES.MANAGER),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.MANAGER),
     fileUploadHandler(),
     parseBodyData,
     validateRequest(ProductValidation.createProductSchema),
     ProductController.createProduct
   )
   .get(
-    auth(USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.EMPLOYEE),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.EMPLOYEE),
     ProductController.getAllProducts
   );
 
 router
   .route('/:id')
   .get(
-    auth(USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.EMPLOYEE),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.EMPLOYEE),
     ProductController.getSingleProduct
   )
   .patch(
-    auth(USER_ROLES.ADMIN, USER_ROLES.MANAGER),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.MANAGER),
     fileUploadHandler(),
     parseBodyData,
     validateRequest(ProductValidation.updateProductSchema),
     ProductController.updateProduct
   )
   .delete(
-    auth(USER_ROLES.ADMIN, USER_ROLES.MANAGER),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.MANAGER),
     ProductController.deleteProduct
   );
 

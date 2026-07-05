@@ -74,8 +74,31 @@ const updateProfileToDB = async (
   return updateDoc;
 };
 
+const createStaffToDB = async (payload: Partial<IUser>): Promise<IUser> => {
+  if (!payload.role || ![USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.EMPLOYEE].includes(payload.role)) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid staff role provided!');
+  }
+
+  const isExist = await User.findOne({ email: payload.email });
+  if (isExist) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Email already exists!');
+  }
+
+  // Pre-verify staff accounts so they can log in immediately
+  payload.verified = true;
+  payload.status = 'active';
+
+  const createStaff = await User.create(payload);
+  if (!createStaff) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create staff account');
+  }
+
+  return createStaff;
+};
+
 export const UserService = {
   createUserToDB,
+  createStaffToDB,
   getUserProfileFromDB,
   updateProfileToDB,
 };

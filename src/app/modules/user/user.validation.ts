@@ -34,7 +34,18 @@ const updateUserSchema = z.object({
   }),
 });
 
+const createStaffSchema = withBody({
+  name: zodString('Name'),
+  email: zodEmail(),
+  password: zodPassword(),
+  role: z.enum([USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.EMPLOYEE]),
+  contact: zodPhone().optional(),
+  location: zodString('Location').optional(),
+  image: zodUrl('Profile image').optional(),
+});
+
 export const UserValidation = {
   createUserSchema,
   updateUserSchema,
+  createStaffSchema,
 };
