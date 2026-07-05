@@ -42,7 +42,7 @@ const main = async () => {
 
     // 3. Start HTTP server
     const port = Number(config.port) || 5000;
-    server = app.listen(port, config.ip_address as string, () => {
+    server = app.listen(port, () => {
       logger.info(
         colors.yellow(`♻️  Server listening on port ${port} [${config.node_env}]`)
       );
