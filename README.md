@@ -17,7 +17,7 @@ A professional, feature-rich Node.js + Express + TypeScript + MongoDB backend te
 | **Query Builder** | Generic search, filter, sort, paginate, field selection |
 | **Email** | Nodemailer with modern dark-themed HTML templates |
 | **Logging** | Winston daily-rotate with separate success/error log files |
-| **File Upload** | Multer with image processing (Jimp) |
+| **File Upload** | Multer + Cloudinary integration with local disk cleanup and backward-compatible local storage fallback |
 
 ---
 
@@ -145,6 +145,9 @@ cp .demo.env .env
 | `SUPER_ADMIN_PASSWORD` | Seed admin password | `12345678` |
 | `SOCKET_PING_TIMEOUT` | Socket.IO ping timeout (ms) | `60000` |
 | `SOCKET_CORS_ORIGIN` | Socket.IO CORS origin | `*` |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary Cloud Name | — |
+| `CLOUDINARY_API_KEY` | Cloudinary API Key | — |
+| `CLOUDINARY_API_SECRET` | Cloudinary API Secret | — |
 
 ---
 
