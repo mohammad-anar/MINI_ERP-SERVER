@@ -24,6 +24,13 @@ router
   );
 
 router
+  .route('/users-stats')
+  .get(
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    UserController.getUsersStats
+  );
+
+router
   .route('/')
   .post(
     validateRequest(UserValidation.createUserSchema),

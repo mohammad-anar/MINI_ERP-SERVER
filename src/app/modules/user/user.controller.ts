@@ -66,4 +66,18 @@ const createStaff = catchAsync(
   }
 );
 
-export const UserController = { createUser, getUserProfile, updateProfile, createStaff };
+const getUsersStats = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await UserService.getUsersStatsFromDB(req.query);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'User statistics retrieved successfully',
+      pagination: result.pagination,
+      data: result.data,
+    });
+  }
+);
+
+export const UserController = { createUser, getUserProfile, updateProfile, createStaff, getUsersStats };
