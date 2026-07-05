@@ -33,6 +33,7 @@
     "@types/nodemailer": "^6.4.15",
     "@types/socket.io": "^3.0.1",
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.10.0",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",

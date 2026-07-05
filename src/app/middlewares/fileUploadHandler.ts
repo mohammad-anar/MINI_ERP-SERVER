@@ -1,9 +1,11 @@
-import { Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
 import { StatusCodes } from 'http-status-codes';
 import multer, { FileFilterCallback } from 'multer';
 import path from 'path';
+import config from '../../config';
 import ApiError from '../../errors/ApiError';
+import { uploadToCloudinary } from '../../helpers/cloudinaryHelper';
 
 const fileUploadHandler = () => {
   //create upload folder
@@ -100,7 +102,50 @@ const fileUploadHandler = () => {
     { name: 'media', maxCount: 3 },
     { name: 'doc', maxCount: 3 },
   ]);
-  return upload;
+
+  return async (req: Request, res: Response, next: NextFunction) => {
+    upload(req, res, async (err) => {
+      if (err) {
+        return next(err);
+      }
+
+      const isCloudinaryConfigured =
+        config.cloudinary.cloud_name &&
+        config.cloudinary.api_key &&
+        config.cloudinary.api_secret;
+
+      if (req.files && isCloudinaryConfigured) {
+        const filesMap = req.files as { [fieldname: string]: Express.Multer.File[] };
+        try {
+          for (const fieldname of Object.keys(filesMap)) {
+            const files = filesMap[fieldname];
+            for (const file of files) {
+              const result = await uploadToCloudinary(file.path, fieldname);
+              if (result) {
+                (file as any).cloudinaryUrl = result.secure_url;
+              }
+              if (fs.existsSync(file.path)) {
+                fs.unlinkSync(file.path);
+              }
+            }
+          }
+        } catch (uploadErr) {
+          // Cleanup any temp files on error
+          for (const fieldname of Object.keys(filesMap)) {
+            const files = filesMap[fieldname];
+            for (const file of files) {
+              if (fs.existsSync(file.path)) {
+                fs.unlinkSync(file.path);
+              }
+            }
+          }
+          return next(uploadErr);
+        }
+      }
+
+      next();
+    });
+  };
 };
 
 export default fileUploadHandler;
