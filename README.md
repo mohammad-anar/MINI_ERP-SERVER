@@ -93,6 +93,28 @@ To test different roles and permissions, log in as the Super Admin (`admin@gmail
 
 ---
 
+## 🚀 Postman Documentation
+
+A fully pre-configured Postman Collection is included in the project root: **[Mini_ERP.postman_collection.json](file:///C:/Anar/Test/mongoose-template/Mini_ERP.postman_collection.json)**.
+
+### How to use:
+1. Open Postman.
+2. Click **Import** in the top-left and select the [Mini_ERP.postman_collection.json](file:///C:/Anar/Test/mongoose-template/Mini_ERP.postman_collection.json) file.
+3. Once imported, click on the **Mini ERP API** collection name to edit variables.
+4. Go to the **Variables** tab and verify/configure:
+   - `baseUrl`: set to `http://localhost:5000/api/v1` (Default)
+   - `accessToken`: Paste the JWT access token received after calling the **Login User** request.
+5. All protected endpoints inside the collection will automatically reference this `{{accessToken}}` variable.
+
+### Request Folders included:
+- **Authentication & Users**: Login, signup, retrieve/patch user profile, and register staff.
+- **Product Inventory**: CRUD routes, paging, search queries, and multipart/form-data upload.
+- **Sales Transactions**: Checkout, stock checks, and history feeds.
+- **Dashboard Stats**: Aggregate reports (low stock, sales counts).
+- **Alert Notifications**: Query lists, mark read.
+
+---
+
 ## 🌍 Environment Variables
 
 Copy `.demo.env` → `.env` and fill in all values.

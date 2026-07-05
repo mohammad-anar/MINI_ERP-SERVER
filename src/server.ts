@@ -3,6 +3,7 @@ import colors from 'colors';
 import mongoose from 'mongoose';
 import app from './app';
 import config from './config';
+import http from 'http';
 import { seedSuperAdmin } from './DB/seedAdmin';
 import { socketHelper } from './helpers/socketHelper';
 import { errorLogger, logger } from './shared/logger';
@@ -15,6 +16,20 @@ process.on('uncaughtException', error => {
 
 // ─── Main bootstrap ────────────────────────────────────────────────────────
 let server: ReturnType<typeof app.listen> | null = null;
+
+const startKeepAlive = (port: number) => {
+  const intervalMs = (14 * 60 + 50) * 1000; // 14:50 min in milliseconds = 890000ms
+  const pingUrl = process.env.RENDER_EXTERNAL_URL || `http://localhost:${port}/`;
+
+  setInterval(() => {
+    logger.info(`Self-pinging to keep server active: ${pingUrl}`);
+    http.get(pingUrl, (res) => {
+      logger.info(`Keep-alive ping successful (Status: ${res.statusCode})`);
+    }).on('error', (err) => {
+      errorLogger.error('Keep-alive self-ping failed:', err);
+    });
+  }, intervalMs);
+};
 
 const main = async () => {
   try {
@@ -31,6 +46,8 @@ const main = async () => {
       logger.info(
         colors.yellow(`♻️  Server listening on port ${port} [${config.node_env}]`)
       );
+      // Start keep-alive self-ping interval (14:50 min)
+      startKeepAlive(port);
     });
 
     // 4. Attach Socket.IO
