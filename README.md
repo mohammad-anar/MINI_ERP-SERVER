@@ -87,9 +87,9 @@ Use this account to perform full administrative actions, configure products, pro
 To test different roles and permissions, log in as the Super Admin (`admin@gmail.com`), go to **Create Staff** in the sidebar, and register new users. Admins can create the following account types which can be logged in immediately:
 
 * **Manager**: Can view/create sales and manage products (create, update, delete).
-  * *Example Test Credentials*: `manager@gmail.com` / `password123`
+  * *Example Test Credentials*: `manager@gmail.com` / `12345678`
 * **Employee**: Can view products and create sales (cannot edit/delete products).
-  * *Example Test Credentials*: `employee@gmail.com` / `password123`
+  * *Example Test Credentials*: `employee@gmail.com` / `12345678`
 
 ---
 
@@ -398,9 +398,3 @@ npm run lint:check   # ESLint check
 npm run lint:fix     # ESLint auto-fix
 npm run prettier:fix # Prettier format
 ```
-
----
-
-## 📜 License
-
-ISC
